@@ -7,20 +7,18 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
+    "check": "tsc",
     "preview": "vite preview"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "packageManager": "pnpm@10.4.1",
   "devDependencies": {
-    "@tailwindcss/vite": "^4",
     "@types/p5": "^1",
     "typescript": "~5.7.2",
     "vite": "^6.1.0"
   },
   "dependencies": {
-    "p5": "^1",
-    "tailwindcss": "^4"
+    "p5": "^1"
   }
 }

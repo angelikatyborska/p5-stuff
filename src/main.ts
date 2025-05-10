@@ -1,4 +1,5 @@
-import p5 from "p5";
+import P5 from "p5";
+import { randInt } from "./utils.ts";
 
 // Entrypoint code
 const rootEl = document.getElementById("p5-root");
@@ -7,44 +8,33 @@ if (!rootEl) {
 }
 main(rootEl);
 
-function myP5(p: p5) {
-  let font: p5.Font;
-  let helloWorldTextRotation = 0;
-
-  // user code goes here
+function myP5(p: P5) {
   Object.assign(p, {
-    preload() {
-      // can preload assets here...
-      font = p.loadFont(
-        new URL("/public/fonts/inconsolata.otf", import.meta.url).href
-      );
-    },
+    preload() {},
     setup() {
-      p.createCanvas(800, 600, p.WEBGL);
-      p.background("skyblue");
-      // setup some basic default text + font size
-      p.textFont(font);
-      p.textSize(36);
-      // ...
-    },
-    draw() {
-      // clear screen with background color
-      p.background("skyblue");
+      const canvasSize = 400;
+      p.createCanvas(canvasSize, canvasSize);
 
-      // Hello P5.js!
-      p.push();
-      p.textAlign(p.CENTER, p.CENTER);
-      if (p.frameCount % 3 === 0) {
-        helloWorldTextRotation += 0.03125;
+      const squareWidth = 10;
+      const rows = canvasSize / squareWidth;
+      const columns = canvasSize / squareWidth;
+      p.noStroke();
+
+      for (let nx = 0; nx < columns; nx++) {
+        for (let ny = 0; ny < rows; ny++) {
+          const min = 0;
+          const max = 255;
+          const value = randInt(min, max);
+          const color = p.color(value, value, value, 255);
+          p.fill(color);
+          p.square(nx * squareWidth, ny * squareWidth, squareWidth);
+        }
       }
-      p.rotateY(p.PI * helloWorldTextRotation);
-      p.text("Hello P5.js!", 0, 0);
-      p.pop();
-      // ...
     },
+    draw() {},
   } satisfies Pick<typeof p, "preload" | "setup" | "draw">);
 }
 
 function main(rootElement: HTMLElement) {
-  new p5(myP5, rootElement);
+  new P5(myP5, rootElement);
 }

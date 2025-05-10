@@ -1,1 +1,16 @@
-@import "tailwindcss";
+body {
+  background: black;
+  padding: 0;
+  margin: 0;
+}
+
+.root {
+  display: grid;
+  justify-content: center;
+  align-items: center;
+  min-height: 100dvh;
+}
+
+canvas {
+  border: 20px solid white;
+}
