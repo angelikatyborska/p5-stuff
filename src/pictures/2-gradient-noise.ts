@@ -13,7 +13,8 @@ export default function Picture(p: P5) {
       const columns = canvasSize / squareWidth;
       p.noStroke();
 
-      const noRandomnessStripeHeight = randInt(rows * 0.05, rows * 0.25);
+      const whiteStripeHeight = randInt(rows * 0.05, rows * 0.25);
+      const blackStripeHeight = randInt(rows * 0.05, rows * 0.25);
 
       for (let nx = 0; nx < columns; nx++) {
         for (let ny = 0; ny < rows; ny++) {
@@ -21,8 +22,8 @@ export default function Picture(p: P5) {
           let maxLightness;
 
           const rand = randInt(
-            noRandomnessStripeHeight,
-            rows - 1 - noRandomnessStripeHeight,
+            whiteStripeHeight,
+            rows - 1 - blackStripeHeight,
           );
 
           let isDarkSquare = rand <= ny ? 1 : 0;
