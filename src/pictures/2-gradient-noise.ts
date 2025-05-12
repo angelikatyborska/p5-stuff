@@ -21,10 +21,7 @@ export default function Picture(p: P5) {
           let minLightness;
           let maxLightness;
 
-          const rand = randInt(
-            whiteStripeHeight,
-            rows - 1 - blackStripeHeight,
-          );
+          const rand = randInt(whiteStripeHeight, rows - 1 - blackStripeHeight);
 
           let isDarkSquare = rand <= ny ? 1 : 0;
 

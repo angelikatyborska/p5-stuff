@@ -1,5 +1,5 @@
 import P5 from "p5";
-import Picture from "./pictures/2-gradient-noise.ts";
+import Picture from "./pictures/3-hundertwasser.ts";
 
 // Entrypoint code
 const rootEl = document.getElementById("p5-root");
