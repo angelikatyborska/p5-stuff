@@ -1,0 +1,122 @@
+---
+import Base from "../layouts/Base.astro";
+import Picture from "../components/Picture.astro";
+const id = 3;
+const description = "hundertwasser";
+---
+
+<Base title={id}>
+  <Picture id={id} description={description} />
+  <script>
+    import P5 from "p5";
+    import { randInt } from "../lib/utils.ts";
+    import { picture } from "../lib/picture";
+
+    function Picture(p: P5) {
+      Object.assign(p, {
+        preload() {},
+        setup() {
+          const canvasSize = 640;
+          p.createCanvas(canvasSize, canvasSize);
+          p.background(p.color(25, 25, 25));
+          p.noStroke();
+
+          // dots darker
+          let squareWidth = 24;
+          let rows = canvasSize / squareWidth;
+          let columns = canvasSize / squareWidth;
+
+          for (let nx = 0; nx < columns; nx++) {
+            for (let ny = 0; ny < rows; ny++) {
+              const x = randInt(nx * squareWidth, (nx + 1) * squareWidth);
+
+              const y = randInt(ny * squareWidth, (ny + 1) * squareWidth);
+
+              const radius = randInt(squareWidth * 0.1, squareWidth * 0.2);
+
+              const color = p.color(40, 40, 40);
+              p.fill(color);
+              p.circle(x, y, radius);
+            }
+          }
+
+          // dots lighter
+          squareWidth = 20;
+          rows = canvasSize / squareWidth;
+          columns = canvasSize / squareWidth;
+
+          for (let nx = 0; nx < columns; nx++) {
+            for (let ny = 0; ny < rows; ny++) {
+              const x = randInt(nx * squareWidth, (nx + 1) * squareWidth);
+
+              const y = randInt(ny * squareWidth, (ny + 1) * squareWidth);
+
+              const radius = randInt(squareWidth * 0.1, squareWidth * 0.2);
+
+              const color = p.color(60, 60, 60);
+              p.fill(color);
+              p.circle(x, y, radius);
+            }
+          }
+
+          // colorful lines
+          let colors = [
+            // green
+            p.color(50, 130, 30),
+            // red
+            p.color(156, 33, 18),
+            // yellow
+            p.color(218, 183, 50),
+            // blue
+            p.color(36, 19, 115),
+            // orange
+            p.color(184, 78, 25),
+            p.color(255, 255, 255),
+            p.color(10, 10, 10),
+          ];
+          let lineCenterYs = [
+            randInt(canvasSize * 0.15, canvasSize * 0.3),
+            randInt(canvasSize * 0.45, canvasSize * 0.55),
+            randInt(canvasSize * 0.7, canvasSize * 0.9),
+          ];
+          let pieceGap = canvasSize * 0.01;
+
+          lineCenterYs.forEach((lineCenterY) => {
+            let heightBase = randInt(canvasSize * 0.025, canvasSize * 0.1);
+            let pieceHeightStart = randInt(heightBase * 0.8, heightBase * 1.2);
+            let pieceHeightEnd = randInt(heightBase * 0.9, heightBase * 1.1);
+            let lineXOffset = randInt(-5 * pieceGap, -2 * pieceGap);
+            let pieceWidth = randInt(canvasSize * 0.05, canvasSize * 0.2);
+
+            while (lineXOffset < canvasSize) {
+              p.fill(colors[randInt(0, colors.length - 1)]!);
+
+              p.beginShape();
+
+              p.vertex(lineXOffset, lineCenterY - pieceHeightStart * 0.5);
+              p.vertex(
+                lineXOffset + pieceWidth,
+                lineCenterY - pieceHeightEnd * 0.5,
+              );
+              p.vertex(
+                lineXOffset + pieceWidth,
+                lineCenterY + pieceHeightEnd * 0.5,
+              );
+              p.vertex(lineXOffset, lineCenterY + pieceHeightStart * 0.5);
+
+              p.endShape(p.CLOSE);
+
+              lineXOffset = lineXOffset + pieceWidth + pieceGap;
+              pieceWidth = randInt(canvasSize * 0.05, canvasSize * 0.2);
+              pieceHeightStart = pieceHeightEnd;
+              pieceHeightEnd = randInt(heightBase * 0.9, heightBase * 1.1);
+            }
+          });
+        },
+        draw() {},
+      } satisfies Pick<typeof p, "preload" | "setup" | "draw">);
+    }
+
+    picture(Picture);
+  </script>
+</Base>

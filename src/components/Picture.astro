@@ -1,0 +1,24 @@
+---
+export type Props = {
+  id: number;
+  description: string;
+};
+const { description } = Astro.props;
+---
+
+<div class="picture">
+  <div id="p5-root" class="root"></div>
+  <div class="description">{description}</div>
+</div>
+<style>
+  canvas {
+    border: 20px solid white;
+  }
+
+  .picture {
+    display: grid;
+    justify-content: center;
+    align-items: center;
+    min-height: 100dvh;
+  }
+</style>
