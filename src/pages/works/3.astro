@@ -1,6 +1,6 @@
 ---
-import Base from "../layouts/Base.astro";
-import Picture from "../components/Picture.astro";
+import Base from "../../layouts/Base.astro";
+import Picture from "../../components/Picture.astro";
 const id = 3;
 const description = "hundertwasser";
 ---
@@ -9,8 +9,8 @@ const description = "hundertwasser";
   <Picture id={id} description={description} />
   <script>
     import P5 from "p5";
-    import { randInt } from "../lib/utils.ts";
-    import { picture } from "../lib/picture";
+    import { randInt } from "../../lib/utils.ts";
+    import { picture } from "../../lib/picture";
 
     function Picture(p: P5) {
       Object.assign(p, {

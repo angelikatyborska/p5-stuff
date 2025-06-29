@@ -1,6 +1,6 @@
 ---
-import Base from "../layouts/Base.astro";
-import Picture from "../components/Picture.astro";
+import Base from "../../layouts/Base.astro";
+import Picture from "../../components/Picture.astro";
 
 const id = 1;
 // TODO: make into markdown
@@ -10,10 +10,10 @@ const description = "noise";
 <Base title={id}>
   <Picture id={id} description={description} />
   <script>
-    import { picture } from "../lib/picture";
+    import { picture } from "../../lib/picture";
 
     import P5 from "p5";
-    import { randInt } from "../lib/utils.ts";
+    import { randInt } from "../../lib/utils.ts";
 
     export default function Picture(p: P5) {
       Object.assign(p, {

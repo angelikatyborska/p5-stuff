@@ -1,14 +1,24 @@
 ---
+import * as fs from "node:fs";
 export type Props = {
   id: number;
   description: string;
 };
-const { description } = Astro.props;
+const { id, description } = Astro.props;
+import Pagination from "./Pagination.astro";
+
+const lastWorkFilename = fs
+  .readdirSync("./src/pages/works")
+  .sort((a, b) => b.localeCompare(a))[0];
+const lastWorkId = parseInt(lastWorkFilename.replace(".astro", ""), 10);
+
+console.log(lastWorkId);
 ---
 
 <div class="picture">
   <div id="p5-root" class="root"></div>
   <div class="description">{description}</div>
+  <Pagination currentPage={id} firstPage={1} lastPage={lastWorkId} />
 </div>
 <style>
   canvas {
