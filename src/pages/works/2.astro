@@ -3,11 +3,13 @@ import Base from "../../layouts/Base.astro";
 import Picture from "../../components/Picture.astro";
 
 const id = 2;
-const description = "gradient noise";
+const year = 2025;
+const description =
+  "Inspired by [a tram stop in Vienna](/vienna-tram-stop.jpg).";
 ---
 
 <Base title={id}>
-  <Picture id={id} description={description} />
+  <Picture id={id} year={year} description={description} />
   <script>
     import P5 from "p5";
     import { randInt } from "../../lib/utils.ts";

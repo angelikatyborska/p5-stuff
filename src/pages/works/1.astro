@@ -3,12 +3,12 @@ import Base from "../../layouts/Base.astro";
 import Picture from "../../components/Picture.astro";
 
 const id = 1;
-// TODO: make into markdown
-const description = "noise";
+const year = 2025;
+const description = "Noise.";
 ---
 
 <Base title={id}>
-  <Picture id={id} description={description} />
+  <Picture id={id} year={year} description={description} />
   <script>
     import { picture, type Work } from "../../lib/picture";
     import { canvasSize } from "../../lib/canvas";
