@@ -8,4 +8,12 @@ export default {
     "stylelint-config-html/astro",
     "stylelint-config-html/php",
   ],
+  rules: {
+    "selector-pseudo-class-no-unknown": [
+      true,
+      {
+        ignorePseudoClasses: ["global"],
+      },
+    ],
+  },
 };

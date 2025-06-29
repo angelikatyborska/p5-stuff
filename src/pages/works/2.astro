@@ -12,14 +12,16 @@ const description = "gradient noise";
     import P5 from "p5";
     import { randInt } from "../../lib/utils.ts";
     import { picture, type Work } from "../../lib/picture";
+    import { canvasSize } from "../../lib/canvas";
 
     function Picture(p: P5) {
       Object.assign(p, {
         preload() {},
         setup() {
-          const canvasSize = 640;
+          p.noLoop();
           p.createCanvas(canvasSize, canvasSize);
-
+        },
+        draw() {
           const squareWidth = 8;
           const rows = canvasSize / squareWidth;
           const columns = canvasSize / squareWidth;
@@ -56,7 +58,6 @@ const description = "gradient noise";
             }
           }
         },
-        draw() {},
       } satisfies Work);
     }
 

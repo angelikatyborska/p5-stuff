@@ -11,13 +11,16 @@ const description = "hundertwasser";
     import P5 from "p5";
     import { randInt } from "../../lib/utils.ts";
     import { picture, type Work } from "../../lib/picture";
+    import { canvasSize } from "../../lib/canvas";
 
     function Picture(p: P5) {
       Object.assign(p, {
         preload() {},
         setup() {
-          const canvasSize = 640;
+          p.noLoop();
           p.createCanvas(canvasSize, canvasSize);
+        },
+        draw() {
           p.background(p.color(25, 25, 25));
           p.noStroke();
 
@@ -113,7 +116,6 @@ const description = "hundertwasser";
             }
           });
         },
-        draw() {},
       } satisfies Work);
     }
 

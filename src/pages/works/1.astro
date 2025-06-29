@@ -11,6 +11,7 @@ const description = "noise";
   <Picture id={id} description={description} />
   <script>
     import { picture, type Work } from "../../lib/picture";
+    import { canvasSize } from "../../lib/canvas";
 
     import P5 from "p5";
     import { randInt } from "../../lib/utils.ts";
@@ -19,9 +20,10 @@ const description = "noise";
       Object.assign(p, {
         preload() {},
         setup() {
-          const canvasSize = 640;
+          p.noLoop();
           p.createCanvas(canvasSize, canvasSize);
-
+        },
+        draw() {
           const squareWidth = 10;
           const rows = canvasSize / squareWidth;
           const columns = canvasSize / squareWidth;
@@ -38,7 +40,6 @@ const description = "noise";
             }
           }
         },
-        draw() {},
       } satisfies Work);
     }
 

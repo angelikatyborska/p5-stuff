@@ -9,5 +9,12 @@ export function picture(Picture: P5) {
   }
 
   // @ts-expect-error "is not assignable to parameter of type (...args: any[]) => any"
-  new P5(Picture, rootEl);
+  const p = new P5(Picture, rootEl);
+
+  const redrawButton = document.getElementById("p5-redraw-button");
+  if (redrawButton) {
+    redrawButton.addEventListener("click", () => {
+      p.redraw();
+    });
+  }
 }

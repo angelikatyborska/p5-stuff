@@ -1,7 +1,18 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 :root {
   --spacing-xl: 32px;
   --spacing-lg: 24px;
   --spacing-md: 16px;
   --spacing-sm: 8px;
   --spacing-xs: 4px;
+
+  --frame-width: var(--spacing-sm);
+  --passe-partout-width: var(--spacing-xl);
+  --frame-color: black;
+  --passe-partout-color: white;
 }

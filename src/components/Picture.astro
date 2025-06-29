@@ -1,32 +1,74 @@
 ---
+import Pagination from "./Pagination.astro";
 import * as fs from "node:fs";
+import { canvasSize } from "../lib/canvas";
+
 export type Props = {
   id: number;
   description: string;
 };
+
 const { id, description } = Astro.props;
-import Pagination from "./Pagination.astro";
 
 const lastWorkFilename = fs
   .readdirSync("./src/pages/works")
   .sort((a, b) => b.localeCompare(a))[0];
+
 const lastWorkId = parseInt(lastWorkFilename.replace(".astro", ""), 10);
 ---
 
 <div class="picture">
-  <div id="p5-root" class="root"></div>
+  <div class="frame">
+    <div class="passe-partout">
+      <div
+        id="p5-root"
+        class="root"
+        style={{ width: `${canvasSize}px`, aspectRatio: `1/1` }}
+      >
+      </div>
+    </div>
+  </div>
   <div class="description">{description}</div>
+  <div>
+    <button id="p5-redraw-button">Redraw</button>
+  </div>
   <Pagination currentPage={id} firstPage={1} lastPage={lastWorkId} />
 </div>
-<style>
-  canvas {
-    border: 20px solid white;
-  }
 
+<style>
   .picture {
     display: grid;
     justify-content: center;
     align-items: center;
     min-height: 100dvh;
+  }
+
+  .frame {
+    border: var(--frame-width) solid var(--frame-color);
+    min-width: 0;
+  }
+
+  .passe-partout {
+    border: var(--passe-partout-width) solid var(--passe-partout-color);
+  }
+
+  .frame,
+  .passe-partout {
+    max-width: 100%;
+    aspect-ratio: 1/1;
+    position: relative;
+  }
+
+  .root {
+    max-width: 100%;
+    aspect-ratio: 1/1;
+    position: relative;
+
+    & :global(canvas) {
+      display: block;
+      max-width: 100%;
+      height: auto !important;
+      aspect-ratio: 1/1;
+    }
   }
 </style>
