@@ -10,7 +10,7 @@ const description = "noise";
 <Base title={id}>
   <Picture id={id} description={description} />
   <script>
-    import { picture } from "../../lib/picture";
+    import { picture, type Work } from "../../lib/picture";
 
     import P5 from "p5";
     import { randInt } from "../../lib/utils.ts";
@@ -39,7 +39,7 @@ const description = "noise";
           }
         },
         draw() {},
-      } satisfies Pick<typeof p, "preload" | "setup" | "draw">);
+      } satisfies Work);
     }
 
     picture(Picture);

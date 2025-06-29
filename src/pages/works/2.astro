@@ -11,7 +11,7 @@ const description = "gradient noise";
   <script>
     import P5 from "p5";
     import { randInt } from "../../lib/utils.ts";
-    import { picture } from "../../lib/picture";
+    import { picture, type Work } from "../../lib/picture";
 
     function Picture(p: P5) {
       Object.assign(p, {
@@ -38,7 +38,7 @@ const description = "gradient noise";
                 rows - 1 - blackStripeHeight,
               );
 
-              let isDarkSquare = rand <= ny ? 1 : 0;
+              const isDarkSquare = rand <= ny ? 1 : 0;
 
               const lightnessRange = 30;
               if (isDarkSquare === 1) {
@@ -57,7 +57,7 @@ const description = "gradient noise";
           }
         },
         draw() {},
-      } satisfies Pick<typeof p, "preload" | "setup" | "draw">);
+      } satisfies Work);
     }
 
     picture(Picture);

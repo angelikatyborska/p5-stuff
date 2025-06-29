@@ -11,8 +11,6 @@ const lastWorkFilename = fs
   .readdirSync("./src/pages/works")
   .sort((a, b) => b.localeCompare(a))[0];
 const lastWorkId = parseInt(lastWorkFilename.replace(".astro", ""), 10);
-
-console.log(lastWorkId);
 ---
 
 <div class="picture">

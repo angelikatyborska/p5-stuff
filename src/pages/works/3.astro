@@ -10,7 +10,7 @@ const description = "hundertwasser";
   <script>
     import P5 from "p5";
     import { randInt } from "../../lib/utils.ts";
-    import { picture } from "../../lib/picture";
+    import { picture, type Work } from "../../lib/picture";
 
     function Picture(p: P5) {
       Object.assign(p, {
@@ -60,7 +60,7 @@ const description = "hundertwasser";
           }
 
           // colorful lines
-          let colors = [
+          const colors = [
             // green
             p.color(50, 130, 30),
             // red
@@ -74,15 +74,15 @@ const description = "hundertwasser";
             p.color(255, 255, 255),
             p.color(10, 10, 10),
           ];
-          let lineCenterYs = [
+          const lineCenterYs = [
             randInt(canvasSize * 0.15, canvasSize * 0.3),
             randInt(canvasSize * 0.45, canvasSize * 0.55),
             randInt(canvasSize * 0.7, canvasSize * 0.9),
           ];
-          let pieceGap = canvasSize * 0.01;
+          const pieceGap = canvasSize * 0.01;
 
           lineCenterYs.forEach((lineCenterY) => {
-            let heightBase = randInt(canvasSize * 0.025, canvasSize * 0.1);
+            const heightBase = randInt(canvasSize * 0.025, canvasSize * 0.1);
             let pieceHeightStart = randInt(heightBase * 0.8, heightBase * 1.2);
             let pieceHeightEnd = randInt(heightBase * 0.9, heightBase * 1.1);
             let lineXOffset = randInt(-5 * pieceGap, -2 * pieceGap);
@@ -114,7 +114,7 @@ const description = "hundertwasser";
           });
         },
         draw() {},
-      } satisfies Pick<typeof p, "preload" | "setup" | "draw">);
+      } satisfies Work);
     }
 
     picture(Picture);
