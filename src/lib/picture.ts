@@ -2,6 +2,7 @@ import P5 from "p5";
 
 export type Work = Pick<P5, "preload" | "setup" | "draw">;
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function picture(Picture: (...args: any[]) => any) {
   const rootEl = document.getElementById("p5-root");
   if (!rootEl) {
