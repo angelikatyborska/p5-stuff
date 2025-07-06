@@ -1,8 +1,8 @@
 ---
 import Pagination from "./Pagination.astro";
-import * as fs from "node:fs";
 import { canvasSize } from "../lib/canvas";
 import { marked } from "marked";
+import { lastWorkId } from "../lib/works";
 
 export type Props = {
   index: number;
@@ -12,12 +12,6 @@ export type Props = {
 };
 
 const { index, description, year, title } = Astro.props;
-
-const lastWorkFilename = fs
-  .readdirSync("./src/pages/works")
-  .sort((a, b) => b.localeCompare(a))[0];
-
-const lastWorkId = parseInt(lastWorkFilename.replace(".astro", ""), 10);
 ---
 
 <div class="wall" style={{ "--canvas-size": `${canvasSize}px` }}>
