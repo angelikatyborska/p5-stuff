@@ -2,13 +2,14 @@
 import Base from "../../layouts/Base.astro";
 import Picture from "../../components/Picture.astro";
 
-const id = 1;
+const index = 1;
+const title = "noise";
 const year = 2025;
-const description = "Noise.";
+const description = "Hello, world!";
 ---
 
-<Base title={id}>
-  <Picture id={id} year={year} description={description} />
+<Base index={index} title={title}>
+  <Picture index={index} title={title} year={year} description={description} />
   <script>
     import { picture, type Work } from "../../lib/picture";
     import { canvasSize } from "../../lib/canvas";

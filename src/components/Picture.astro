@@ -5,12 +5,13 @@ import { canvasSize } from "../lib/canvas";
 import { marked } from "marked";
 
 export type Props = {
-  id: number;
+  index: number;
   year: number;
+  title: string;
   description: string;
 };
 
-const { id, description, year } = Astro.props;
+const { index, description, year, title } = Astro.props;
 
 const lastWorkFilename = fs
   .readdirSync("./src/pages/works")
@@ -19,48 +20,80 @@ const lastWorkFilename = fs
 const lastWorkId = parseInt(lastWorkFilename.replace(".astro", ""), 10);
 ---
 
-<div class="wall">
+<div class="wall" style={{ "--canvas-size": `${canvasSize}px` }}>
   <div class="picture">
     <div class="frame">
       <div class="passe-partout">
-        <div
-          id="p5-root"
-          class="root"
-          style={{ width: `${canvasSize}px`, aspectRatio: `1/1` }}
-        >
-        </div>
+        <div id="p5-root" class="root"></div>
       </div>
     </div>
   </div>
   <div class="picture-label">
-    <p class="author">Angelika Cathor</p>
+    <p class="author"><a href="https://angelika.me">Angelika Cathor</a></p>
     <div>
-      <h1 class="title"><span class="name">Work nr {id}</span>, {year}</h1>
+      <h1 class="title"><span class="name">{title}</span>, {year}</h1>
       <p class="medium">JavaScript (p5.js) code on HTML canvas</p>
     </div>
     <div class="description" set:html={marked.parse(description)} />
-    <div class="actions"><button id="p5-redraw-button">Redraw</button></div>
+    <div class="actions">
+      <button id="p5-redraw-button" title="Regenerate" class="icon-button">
+        <span class="sr-only">Regenerate</span>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 512 512"
+          width="16"
+          height="16"
+          ><!--!Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2025 Fonticons, Inc.-->
+          <path
+            d="M463.5 224l8.5 0c13.3 0 24-10.7 24-24l0-128c0-9.7-5.8-18.5-14.8-22.2s-19.3-1.7-26.2 5.2L413.4 96.6c-87.6-86.5-228.7-86.2-315.8 1c-87.5 87.5-87.5 229.3 0 316.8s229.3 87.5 316.8 0c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0c-62.5 62.5-163.8 62.5-226.3 0s-62.5-163.8 0-226.3c62.2-62.2 162.7-62.5 225.3-1L327 183c-6.9 6.9-8.9 17.2-5.2 26.2s12.5 14.8 22.2 14.8l119.5 0z"
+          ></path></svg
+        >
+      </button>
+    </div>
   </div>
   <div class="pagination">
-    <Pagination currentPage={id} firstPage={1} lastPage={lastWorkId} />
+    <Pagination currentPage={index} firstPage={1} lastPage={lastWorkId} />
   </div>
 </div>
 
 <style>
   .wall {
+    --wall-padding: var(--spacing-xl);
+    --max-wall-size: calc(100dvw - 2 * var(--wall-padding));
+
     display: grid;
     justify-content: center;
     align-items: center;
-    grid-template-columns: 1fr auto 1fr;
-    grid-template-rows: 1fr auto;
     gap: var(--spacing-xl);
-    padding: var(--spacing-xl);
-    min-height: 100dvh;
+    padding: var(--wall-padding);
+    grid-template: "picture" auto "pagination" auto "label" auto / min(
+        min(var(--canvas-size), var(--max-wall-size)),
+        50dvh
+      );
+
+    @media (orientation: landscape) {
+      grid-template:
+        "picture label" auto "pagination x" auto / min(
+          min(var(--canvas-size), var(--max-wall-size)),
+          75dvh
+        )
+        1fr;
+    }
+
+    @media (orientation: landscape) and (width >= 1100px) {
+      grid-template:
+        "a picture label" auto "f pagination e" auto / 1fr min(
+          min(var(--canvas-size), var(--max-wall-size)),
+          75dvh
+        )
+        1fr;
+    }
   }
 
   .picture {
-    grid-column: 2 / 3;
+    grid-area: picture;
     box-shadow: var(--picture-shadow);
+    width: 100%;
   }
 
   .frame {
@@ -74,26 +107,27 @@ const lastWorkId = parseInt(lastWorkFilename.replace(".astro", ""), 10);
 
   .frame,
   .passe-partout {
-    max-width: 100%;
+    width: 100%;
     aspect-ratio: 1/1;
     position: relative;
   }
 
   .root {
-    max-width: 100%;
+    width: 100%;
     aspect-ratio: 1/1;
     position: relative;
 
     & :global(canvas) {
       display: block;
-      max-width: 100%;
+      width: 100% !important;
       height: auto !important;
       aspect-ratio: 1/1;
     }
   }
 
   .picture-label {
-    grid-column: 3 / 4;
+    grid-area: label;
+    place-self: start center;
     display: grid;
     grid-template-rows: repeat(4, auto);
     box-shadow: var(--label-shadow);
@@ -101,8 +135,11 @@ const lastWorkId = parseInt(lastWorkFilename.replace(".astro", ""), 10);
     row-gap: var(--spacing-md);
     max-width: fit-content;
 
+    @media (orientation: landscape) {
+      place-self: end start;
+    }
+
     .author {
-      font-size: var(--font-size-h6);
       font-weight: bold;
       margin: 0;
     }
@@ -129,7 +166,10 @@ const lastWorkId = parseInt(lastWorkFilename.replace(".astro", ""), 10);
   }
 
   .pagination {
-    grid-column: 2 / 3;
-    grid-row: 2 / 3;
+    grid-area: pagination;
+  }
+
+  .icon-button {
+    aspect-ratio: 1/1;
   }
 </style>

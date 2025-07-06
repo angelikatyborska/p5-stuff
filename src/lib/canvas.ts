@@ -1,1 +1,1 @@
-export const canvasSize = 640;
+export const canvasSize = 1000;
