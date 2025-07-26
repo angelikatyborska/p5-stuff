@@ -2,7 +2,9 @@ const fs = require("fs");
 
 const slugs = fs.readdirSync("src/pages/works/");
 const paths = [
-  ...slugs.map((slug) => `public/og/${slug.split('.')[0]}.png`),
+  ...slugs
+    .filter((slug) => !slug.startsWith("."))
+    .map((slug) => `public/og/${slug.split(".")[0]}.png`),
 ];
 
 const missingImages = paths.filter((path) => {

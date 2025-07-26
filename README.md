@@ -1,8 +1,10 @@
 # P5 Stuff
 
-TODO:
+Generative art written with p5.js
 
-- themes: Louvre with golden frame, modern art museum with no frame?, light, dark
-- OG images
-- TODO: cool shadows and maybe even fake lights from the top like https://d16kd6gzalkogb.cloudfront.net/magazine_images/Vancouver-Art-Gallery-via-Tourism-Vancouver.jpg
-- TODO: add skip button "skip to nav"
+Using Astro.
+
+## Regenerating OG images
+
+1. Run dev server with `npm run dev`
+2. Run `npm run screenshot_og_images`
