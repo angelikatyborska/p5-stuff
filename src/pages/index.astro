@@ -1,4 +1,4 @@
 ---
 import { lastWorkId } from "../lib/works";
-return Astro.redirect(`/works/${lastWorkId}`);
+return Astro.rewrite(`/works/${lastWorkId}`);
 ---
