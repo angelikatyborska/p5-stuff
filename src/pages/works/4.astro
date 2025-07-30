@@ -1,0 +1,83 @@
+---
+import Base from "../../layouts/Base.astro";
+import Picture from "../../components/Picture.astro";
+const index = 4;
+const title = "Balancing act";
+const year = 2025;
+const description = "";
+---
+
+<Base index={index} title={title}>
+  <Picture index={index} title={title} year={year} description={description} />
+  <script>
+    import P5 from "p5";
+    import { randInt } from "../../lib/utils.ts";
+    import { picture, type Work } from "../../lib/picture";
+    import { canvasSize } from "../../lib/canvas";
+
+    function Picture(p: P5) {
+      Object.assign(p, {
+        preload() {},
+        setup() {
+          p.noLoop();
+          p.createCanvas(canvasSize, canvasSize);
+        },
+        draw() {
+          p.background(p.color(255, 255, 255));
+          p.noStroke();
+
+          const borderWidth = 3;
+          const columns = 8;
+          const rows = 24;
+          const cellWidth =
+            (canvasSize - (columns + 1) * borderWidth) / columns;
+          const cellHeight = (canvasSize - (rows + 1) * borderWidth) / rows;
+          const textColor = p.color(25, 25, 25);
+          const textColorNegative = p.color(190, 25, 25);
+
+          const color = p.color(210, 210, 210);
+          p.fill(color);
+
+          for (let nx = 0; nx < columns + 1; nx++) {
+            p.fill(color);
+            p.rect(nx * (cellWidth + borderWidth), 0, borderWidth, canvasSize);
+          }
+
+          for (let ny = 0; ny < rows + 1; ny++) {
+            p.fill(color);
+            p.rect(0, ny * (cellHeight + borderWidth), canvasSize, borderWidth);
+          }
+
+          const minValue = randInt(-5000, 5000);
+          const rangeSize = randInt(10, 99999);
+          const maxValue = randInt(minValue + 1, minValue + rangeSize);
+
+          for (let nx = 0; nx < columns + 1; nx++) {
+            for (let ny = 0; ny < rows + 1; ny++) {
+              p.textSize(cellHeight / 1.5);
+              p.textFont("Arial");
+              p.textAlign(p.CENTER, p.CENTER);
+              const value = randInt(minValue, maxValue);
+
+              if (value >= 0) {
+                p.fill(textColor);
+              } else {
+                p.fill(textColorNegative);
+              }
+
+              p.text(
+                value,
+                (nx - 0.5) * (cellWidth + borderWidth),
+                (ny - 0.5) * (cellHeight + borderWidth),
+                cellWidth * 2,
+                cellHeight * 2.3,
+              );
+            }
+          }
+        },
+      } satisfies Work);
+    }
+
+    picture(Picture);
+  </script>
+</Base>
