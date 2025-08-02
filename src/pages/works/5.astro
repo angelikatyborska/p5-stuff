@@ -1,0 +1,86 @@
+---
+import Base from "../../layouts/Base.astro";
+import Picture from "../../components/Picture.astro";
+const index = 5;
+const title = "Daisies";
+const year = 2025;
+const description = "";
+---
+
+<Base index={index} title={title}>
+  <Picture index={index} title={title} year={year} description={description} />
+  <script>
+    import P5 from "p5";
+    import { randInt } from "../../lib/utils.ts";
+    import { picture, type Work } from "../../lib/picture";
+    import { canvasSize } from "../../lib/canvas";
+
+    function Picture(p: P5) {
+      Object.assign(p, {
+        preload() {},
+        setup() {
+          p.noLoop();
+          p.createCanvas(canvasSize, canvasSize);
+        },
+        draw() {
+          p.colorMode(p.HSL);
+          p.background(
+            p.color(randInt(0, 360), randInt(10, 70), randInt(50, 90)),
+          );
+          p.noStroke();
+
+          const columns = randInt(3, 8);
+          const rows = columns * 2;
+          const cellWidth = canvasSize / columns;
+          const cellHeight = canvasSize / rows;
+
+          const diameter = randInt(17, 22);
+
+          const middleColor = p.color(40, 90, 80);
+          const petalColor = p.color(40, 100, 100);
+          p.fill(middleColor);
+          p.noStroke();
+
+          const totalRotations = 8;
+          const ellipsisRatio1 = randInt(2.6, 3.2);
+          const ellipsisRatio2 = 0.6;
+
+          for (let nx = 0; nx <= columns + 1; nx++) {
+            for (let ny = 0; ny <= rows + 1; ny++) {
+              p.fill(petalColor);
+              for (
+                let rotations = 1;
+                rotations <= totalRotations;
+                rotations++
+              ) {
+                p.push();
+                p.translate(
+                  (nx - (ny % 2 === 0 ? 0.5 : 0)) * cellWidth,
+                  (ny - 0.5) * cellHeight,
+                );
+                p.rotate(rotations * (4 / totalRotations) * p.QUARTER_PI);
+                p.ellipse(
+                  0,
+                  0,
+                  diameter * ellipsisRatio1,
+                  diameter * ellipsisRatio2,
+                );
+
+                p.pop();
+              }
+
+              p.fill(middleColor);
+              p.circle(
+                (nx - (ny % 2 === 0 ? 0.5 : 0)) * cellWidth,
+                (ny - 0.5) * cellHeight,
+                diameter,
+              );
+            }
+          }
+        },
+      } satisfies Work);
+    }
+
+    picture(Picture);
+  </script>
+</Base>
