@@ -1,0 +1,82 @@
+---
+import Base from "../../layouts/Base.astro";
+import Picture from "../../components/Picture.astro";
+const index = 6;
+const title = "Triangles";
+const year = 2025;
+const description = "";
+---
+
+<Base index={index} title={title}>
+  <Picture index={index} title={title} year={year} description={description} />
+  <script>
+    import P5 from "p5";
+    import { randInt } from "../../lib/utils.ts";
+    import { picture, type Work } from "../../lib/picture";
+    import { canvasSize } from "../../lib/canvas";
+
+    function Picture(p: P5) {
+      Object.assign(p, {
+        preload() {},
+        setup() {
+          p.createCanvas(canvasSize, canvasSize);
+          p.noLoop();
+        },
+        draw() {
+          p.colorMode(p.HSL);
+          p.background(p.color(0, 0, 90));
+
+          const strokeWeight = 1;
+          p.strokeWeight(strokeWeight);
+          const frameCount = 100;
+          const framesPerCycle = 200;
+
+          // 60 deg, the angle of an equilateral triangle
+          const alpha = p.PI / 3;
+
+          const triangleCount = 20;
+          const minWidth = 20;
+          const maxWidth = canvasSize - minWidth * 2;
+
+          const centerX = canvasSize / 2;
+          const centerY =
+            canvasSize * 0.5 -
+            maxWidth * 0.5 * p.sin(alpha) +
+            (maxWidth * 0.5) / p.cos(alpha / 2);
+
+          const triangleWidths = new Array(triangleCount)
+            .fill(0)
+            .map(
+              (value, index) =>
+                maxWidth -
+                ((maxWidth - minWidth) / (triangleCount - 1)) * index,
+            );
+          console.log(triangleWidths);
+          triangleWidths.forEach((triangleWidth) => {
+            // drawing arms clockwise
+            const line1x1 = centerX;
+            const line1y1 = centerY - triangleWidth / 2 / p.cos(alpha / 2);
+            const line1x2 = centerX + 0.5 * triangleWidth;
+            const line1y2 = centerY + (triangleWidth / 2) * p.tan(alpha / 2);
+
+            const line2x1 = line1x2;
+            const line2y1 = line1y2;
+            const line2x2 = centerX - 0.5 * triangleWidth;
+            const line2y2 = centerY + (triangleWidth / 2) * p.tan(alpha / 2);
+
+            const line3x1 = line2x2;
+            const line3y1 = line2y2;
+            const line3x2 = line1x1;
+            const line3y2 = line1y1;
+
+            p.line(line1x1, line1y1, line1x2, line1y2);
+            p.line(line2x1, line2y1, line2x2, line2y2);
+            p.line(line3x1, line3y1, line3x2, line3y2);
+          });
+        },
+      } satisfies Work);
+    }
+
+    picture(Picture);
+  </script>
+</Base>
