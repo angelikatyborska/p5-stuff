@@ -65,16 +65,16 @@ button {
 }
 
 :root {
-  --gray-0: hsl(0 0 0%);
-  --gray-5: hsl(0 0 5%);
-  --gray-10: hsl(0 0 10%);
-  --gray-15: hsl(0 0 15%);
-  --gray-20: hsl(0 0 20%);
-  --gray-25: hsl(0 0 25%);
+  --gray-0: hsl(0deg 0% 0%);
+  --gray-5: hsl(0deg 0% 5%);
+  --gray-10: hsl(0deg 0% 10%);
+  --gray-15: hsl(0deg 0% 15%);
+  --gray-20: hsl(0deg 0% 20%);
+  --gray-25: hsl(0deg 0% 25%);
 
-  --gray-90: hsl(0 0 90%);
-  --gray-95: hsl(0 0 95%);
-  --gray-100: hsl(0 0 100%);
+  --gray-90: hsl(0deg 0% 90%);
+  --gray-95: hsl(0deg 0% 95%);
+  --gray-100: hsl(0deg 0% 100%);
 
   --spacing-2xl: 40px;
   --spacing-xl: 32px;
@@ -95,7 +95,7 @@ button {
 
   --frame-width: var(--spacing-sm);
   --passe-partout-width: var(--spacing-xl);
-  --frame-color: var(--gray-0);
+  --frame-color: var(--gray-10);
   --passe-partout-color: var(--gray-100);
   --text-color: var(--gray-0);
   --background-color: var(--gray-100);
