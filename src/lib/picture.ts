@@ -1,11 +1,13 @@
 import P5 from "p5";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type Work<T = any> = Pick<P5, "preload" | "setup" | "draw"> &
   ([T] extends [never]
-    ? {}
+    ? // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+      {}
     : {
-      state: T;
-    })
+        state: T;
+      });
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function picture(Picture: (...args: any[]) => any) {
