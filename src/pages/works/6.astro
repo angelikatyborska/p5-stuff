@@ -2,7 +2,7 @@
 import Base from "../../layouts/Base.astro";
 import Picture from "../../components/Picture.astro";
 const index = 6;
-const title = "Triangles";
+const title = "Growing triangles";
 const year = 2025;
 const description = "";
 ---
@@ -11,32 +11,60 @@ const description = "";
   <Picture index={index} title={title} year={year} description={description} />
   <script>
     import P5 from "p5";
-    import { randInt } from "../../lib/utils.ts";
     import { picture, type Work } from "../../lib/picture";
     import { canvasSize } from "../../lib/canvas";
+    import { randInt } from "../../lib/utils";
+
+    type State6 = {
+      triangleCount: number,
+      minWidth: number,
+      directionChange: number,
+      backgroundColor: P5.Color,
+      blackWhiteFlip: boolean
+    }
 
     function Picture(p: P5) {
       Object.assign(p, {
+        state: {
+          triangleCount: 1,
+          minWidth: 1,
+          directionChange: 1,
+          backgroundColor: p.color(0, 0, 50),
+          blackWhiteFlip: true,
+        },
         preload() {},
         setup() {
           p.createCanvas(canvasSize, canvasSize);
-          p.noLoop();
+          p.colorMode(p.HSL);
+
+          this.state.blackWhiteFlip = randInt(0, 1) === 0;
+          this.state.triangleCount = randInt(3, 12);
+          this.state.minWidth = randInt(20, 50);
+          this.state.directionChange = randInt(
+            1,
+            Math.floor(this.state.triangleCount),
+          );
+
+          this.state.backgroundColor = p.color(
+            randInt(0, 360),
+            90,
+            randInt(40, 70),
+          );
         },
         draw() {
-          p.colorMode(p.HSL);
-          p.background(p.color(0, 0, 90));
+          p.background(this.state.backgroundColor);
 
-          const strokeWeight = 1;
+          const strokeWeight = 10;
           p.strokeWeight(strokeWeight);
-          const frameCount = 100;
+          const frameCount = p.frameCount;
           const framesPerCycle = 200;
 
           // 60 deg, the angle of an equilateral triangle
           const alpha = p.PI / 3;
 
-          const triangleCount = 20;
-          const minWidth = 20;
-          const maxWidth = canvasSize - minWidth * 2;
+          const triangleCount = this.state.triangleCount;
+          const minWidth = this.state.minWidth;
+          const maxWidth = canvasSize - 100;
 
           const centerX = canvasSize / 2;
           const centerY =
@@ -47,13 +75,13 @@ const description = "";
           const triangleWidths = new Array(triangleCount)
             .fill(0)
             .map(
-              (value, index) =>
+              (_value, index) =>
                 maxWidth -
                 ((maxWidth - minWidth) / (triangleCount - 1)) * index,
             );
-          console.log(triangleWidths);
-          triangleWidths.forEach((triangleWidth) => {
-            // drawing arms clockwise
+
+          triangleWidths.forEach((triangleWidth, index) => {
+            // drawing arms clockwise, starting at top center
             const line1x1 = centerX;
             const line1y1 = centerY - triangleWidth / 2 / p.cos(alpha / 2);
             const line1x2 = centerX + 0.5 * triangleWidth;
@@ -69,12 +97,34 @@ const description = "";
             const line3x2 = line1x1;
             const line3y2 = line1y1;
 
-            p.line(line1x1, line1y1, line1x2, line1y2);
-            p.line(line2x1, line2y1, line2x2, line2y2);
-            p.line(line3x1, line3y1, line3x2, line3y2);
+            const factor =
+              Math.floor(frameCount / framesPerCycle) % 2 === 0 ? 1 : -1;
+            const multiplier =
+              factor === 1
+                ? (frameCount % framesPerCycle) / framesPerCycle
+                : 1 - (frameCount % framesPerCycle) / framesPerCycle;
+            p.drawingContext.setLineDash([
+              triangleWidth * multiplier,
+              triangleWidth,
+            ]);
+
+            const direction: "cw" | "ccw" =
+              index % this.state.directionChange === 0 ? "cw" : "ccw";
+
+            if (direction === (this.state.blackWhiteFlip ? "cw" : "ccw")) {
+              p.stroke(p.color(0, 0, 0));
+              p.line(line1x1, line1y1, line1x2, line1y2);
+              p.line(line2x1, line2y1, line2x2, line2y2);
+              p.line(line3x1, line3y1, line3x2, line3y2);
+            } else {
+              p.stroke(p.color(0, 0, 100));
+              p.line(line1x2, line1y2, line1x1, line1y1);
+              p.line(line2x2, line2y2, line2x1, line2y1);
+              p.line(line3x2, line3y2, line3x1, line3y1);
+            }
           });
         },
-      } satisfies Work);
+      } satisfies Work<State6>);
     }
 
     picture(Picture);
