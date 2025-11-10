@@ -1,6 +1,13 @@
 import P5 from "p5";
 
-export type Work = Pick<P5, "preload" | "setup" | "draw">;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type Work<T = any> = Pick<P5, "preload" | "setup" | "draw"> &
+  ([T] extends [never]
+    ? // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+      {}
+    : {
+        state: T;
+      });
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function picture(Picture: (...args: any[]) => any) {
@@ -14,7 +21,15 @@ export function picture(Picture: (...args: any[]) => any) {
   const redrawButton = document.getElementById("p5-redraw-button");
   if (redrawButton) {
     redrawButton.addEventListener("click", () => {
-      p.redraw();
+      const reloop = p.isLooping();
+      p.remove();
+      p.setup();
+
+      if (reloop) {
+        p.loop();
+      } else {
+        p.redraw();
+      }
     });
   }
 }
