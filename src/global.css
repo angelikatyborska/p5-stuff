@@ -93,8 +93,16 @@ button {
   --font-size-small: 0.833rem;
   --font-size-extra-small: 0.694rem;
 
-  --frame-width: var(--spacing-sm);
-  --passe-partout-width: var(--spacing-xl);
+  --frame-width: clamp(
+    var(--spacing-xs),
+    calc(100vw * 8 / 768),
+    var(--spacing-sm)
+  );
+  --passe-partout-width: clamp(
+    var(--spacing-sm),
+    calc(100vw * 32 / 768),
+    var(--spacing-xl)
+  );
   --frame-color: var(--gray-10);
   --passe-partout-color: var(--gray-100);
   --text-color: var(--gray-0);
