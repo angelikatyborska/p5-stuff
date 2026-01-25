@@ -1,0 +1,197 @@
+---
+import Base from "../../layouts/Base.astro";
+import Picture from "../../components/Picture.astro";
+const index = 7;
+const title = "Fighting crime, trying to save the world";
+const year = 2026;
+const description =
+  "[Powerpuff Girls Outro](https://www.youtube.com/watch?v=2KrBZrVQ7XU)";
+---
+
+<Base index={index} title={title}>
+  <Picture index={index} title={title} year={year} description={description} />
+  <script>
+    import P5 from "p5";
+    import { picture, type Work } from "../../lib/picture";
+    import { canvasSize } from "../../lib/canvas";
+    type Point = [number, number];
+
+    type State7 = {
+      colors: Array<P5.Color>;
+      circles: Array<{ zoom: number; colorIndex: number }>;
+      point1: Point;
+      point2: Point;
+      point2Control1: Point;
+      point2Control2: Point;
+      point3: Point;
+      point3Control1: Point;
+      point3Control2: Point;
+      point4: Point;
+      maxZoom: number;
+      zoomStep: number;
+      zoomSpeed: number;
+    };
+
+    function Picture(p: P5) {
+      Object.assign(p, {
+        state: {
+          colors: [],
+          circles: [],
+          zoomSpeed: 1,
+          maxZoom: 10,
+          zoomStep: 1,
+          point1: [0,0],
+          point2: [0,0],
+          point2Control1: [0,0],
+          point2Control2: [0,0],
+          point3: [0,0],
+          point3Control1: [0,0],
+          point3Control2: [0,0],
+          point4: [0,0],
+        },
+        preload() {},
+        setup() {
+          p.createCanvas(canvasSize, canvasSize);
+          p.colorMode(p.HSL);
+
+          this.state.colors = [
+            p.color(358, 84, 43),
+            p.color(355, 68, 57),
+            p.color(350, 64, 74),
+          ];
+
+          const x1 = 60;
+          const x2 = 100;
+
+          const y1 = -90;
+          const y2 = -60;
+          const y3 = 0;
+          const y4 = 100;
+
+          this.state.zoomSpeed = 0.03;
+
+          this.state.point1 = [0, y2];
+          this.state.point2 = [x1, y1];
+          this.state.point2Control1 = [
+            this.state.point2[0] - 40,
+            this.state.point2[1],
+          ];
+          this.state.point2Control2 = [
+            this.state.point2[0] + 40,
+            this.state.point2[1],
+          ];
+          this.state.point3 = [x2, y3];
+          this.state.point3Control1 = [
+            this.state.point3[0] + 20,
+            this.state.point3[1] - 40,
+          ];
+          this.state.point3Control2 = [
+            this.state.point3[0] - 20,
+            this.state.point3[1] + 40,
+          ];
+          this.state.point4 = [0, y4];
+
+          const distanceBetweenHearts = 100;
+          this.state.maxZoom = canvasSize / Math.abs(y2);
+          this.state.zoomStep = distanceBetweenHearts / x2;
+
+          this.state.circles = new Array(
+            Math.floor(this.state.maxZoom / this.state.zoomStep) + 1,
+          )
+            .fill("")
+            .map((_, index) => ({
+              colorIndex: index % this.state.colors.length,
+              zoom: (index + 1) * this.state.zoomStep,
+            }));
+        },
+        draw() {
+          this.state.circles.sort((a, b) => a.zoom - b.zoom);
+
+          // add new small circle if necessary
+          if (this.state.circles[0].zoom >= this.state.zoomStep) {
+            const colorIndex =
+              (this.state.circles[0].colorIndex -
+                1 +
+                this.state.colors.length) %
+              this.state.colors.length;
+            this.state.circles.unshift({ colorIndex, zoom: 0 });
+          }
+
+          // progress animation by increasing zoom
+          this.state.circles = this.state.circles.map((circle) => {
+            return {
+              ...circle,
+              zoom: circle.zoom + this.state.zoomSpeed,
+            };
+          });
+
+          this.state.circles = this.state.circles.filter(
+            (circle) => circle.zoom <= this.state.maxZoom,
+          );
+
+          p.translate(canvasSize / 2, canvasSize / 2);
+          p.noStroke();
+
+          this.state.circles
+            .sort((a, b) => b.zoom - a.zoom)
+            .forEach((circle) => {
+              const { colorIndex, zoom } = circle;
+              p.scale(zoom);
+
+              p.fill(this.state.colors[colorIndex]);
+
+              // heart
+              p.beginShape();
+
+              p.vertex(...this.state.point1);
+              p.bezierVertex(
+                ...this.state.point1,
+                ...this.state.point2Control1,
+                ...this.state.point2,
+              );
+              p.bezierVertex(
+                ...this.state.point2Control2,
+                ...this.state.point3Control1,
+                ...this.state.point3,
+              );
+              p.bezierVertex(
+                ...this.state.point3Control2,
+                ...this.state.point4,
+                ...this.state.point4,
+              );
+              p.bezierVertex(
+                ...this.state.point4,
+                -1 * this.state.point3Control2[0],
+                this.state.point3Control2[1],
+                -1 * this.state.point3[0],
+                this.state.point3[1],
+              );
+              p.bezierVertex(
+                -1 * this.state.point3Control1[0],
+                this.state.point3Control1[1],
+                -1 * this.state.point2Control2[0],
+                this.state.point2Control2[1],
+                -1 * this.state.point2[0],
+                this.state.point2[1],
+              );
+              p.bezierVertex(
+                -1 * this.state.point2Control1[0],
+                this.state.point2Control1[1],
+                -1 * this.state.point1[0],
+                this.state.point1[1],
+                -1 * this.state.point1[0],
+                this.state.point1[1],
+              );
+
+              p.endShape(p.CLOSE);
+              // heart end
+
+              p.scale(1 / zoom);
+            });
+        },
+      } satisfies Work<State7>);
+    }
+
+    picture(Picture);
+  </script>
+</Base>
