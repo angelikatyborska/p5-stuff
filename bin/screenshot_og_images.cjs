@@ -19,6 +19,9 @@ const fs = require("fs");
 
     console.log(`visiting ${slug}`);
     await page.goto(`http://localhost:4321/works/${slug}`);
+    await page.emulateMediaFeatures([
+      { name: "prefers-color-scheme", value: "light" },
+    ]);
     const artwork = await page.waitForSelector("[data-passe-partout]");
     await artwork.screenshot({ path: `public/og/${slug}.png` });
   }
