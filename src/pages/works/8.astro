@@ -1,0 +1,148 @@
+---
+import Base from "../../layouts/Base.astro";
+import Picture from "../../components/Picture.astro";
+const index = 8;
+const title = "Rotating Rings";
+const year = 2026;
+const description = "";
+---
+
+<Base index={index} title={title}>
+  <Picture index={index} title={title} year={year} description={description} />
+  <script>
+    import P5 from "p5";
+    import { picture, type Work } from "../../lib/picture";
+    import { canvasSize } from "../../lib/canvas";
+    import { randInt } from "../../lib/utils.ts";
+
+    type Ring = {
+      angleOffset: number;
+    };
+
+    type State8 = {
+      columns: number;
+      rows: number;
+      thicknessRatio: number;
+      rings: Record<string, Ring>;
+      backgroundColor: P5.Color;
+      isInverse: boolean;
+      isClockwise: boolean;
+    };
+
+    function Picture(p: P5) {
+      const columns = 5;
+      const rows = 5;
+      const rings: Record<string, Ring> = {};
+
+      Object.assign(p, {
+        state: {
+          columns,
+          rows,
+          rings,
+          backgroundColor: p.color(180, 100, 50),
+          isInverse: false,
+          isClockwise: true,
+          thicknessRatio: 2,
+        },
+        preload() {},
+        setup() {
+          p.createCanvas(canvasSize, canvasSize);
+          p.colorMode(p.HSL);
+
+          this.state.backgroundColor = p.color(randInt(0, 360), 100, 50);
+          this.state.isInverse = randInt(1, 2) === 1;
+          this.state.isClockwise = randInt(1, 2) === 1;
+          this.state.thicknessRatio = randInt(1, 3);
+
+          const rings: Record<string, Ring> = {};
+
+          for (let c = 0; c < columns; c++) {
+            for (let r = 0; r < rows; r++) {
+              rings[`${c}, ${r}`] = {
+                angleOffset: randInt(0, 360),
+              };
+            }
+          }
+
+          this.state.rings = rings;
+        },
+        draw() {
+          p.background(this.state.backgroundColor);
+          p.fill(p.color(0, 100, 100));
+          p.noStroke();
+          const frameCount = p.frameCount;
+
+          const drawRing = (
+            cx: number,
+            cy: number,
+            innerR: number,
+            outerR: number,
+            angleStart: number,
+            angleEnd: number,
+          ) => {
+            p.beginShape();
+
+            // Outer circle (clockwise)
+            for (let i = angleStart; i < angleEnd; i++) {
+              const angle = (p.TWO_PI * i) / 360;
+              const x = cx + p.cos(angle) * outerR;
+              const y = cy + p.sin(angle) * outerR;
+              p.vertex(x, y);
+            }
+            p.vertex(cx, cy);
+
+            // Inner hole
+            p.beginContour();
+
+            // Inner circle (counter-clockwise!)
+            for (let i = angleEnd - 1; i >= angleStart; i--) {
+              const angle = (p.TWO_PI * i) / 360;
+              const x = cx + p.cos(angle) * innerR;
+              const y = cy + p.sin(angle) * innerR;
+              p.vertex(x, y);
+            }
+
+            p.vertex(cx, cy);
+
+            p.endContour();
+
+            p.endShape(p.CLOSE);
+          };
+
+          const maxRadius = Math.min(p.height / columns, p.width / rows) * 0.5;
+          const standardRadius = maxRadius * (this.state.thicknessRatio * 0.25);
+
+          for (let c = 0; c < this.state.columns; c++) {
+            for (let r = 0; r < this.state.rows; r++) {
+              const ring = this.state.rings[`${c}, ${r}`];
+              const startAngle =
+                (((this.state.isClockwise ? 1 : -1) * frameCount) % 360) +
+                ring.angleOffset;
+
+              p.fill(p.color(0, 0, this.state.isInverse ? 0 : 100));
+              drawRing(
+                ((c + 0.5) * p.height) / columns,
+                ((r + 0.5) * p.width) / rows,
+                standardRadius,
+                maxRadius,
+                startAngle,
+                startAngle + 270,
+              );
+              p.fill(p.color(0, 0, this.state.isInverse ? 100 : 0));
+              drawRing(
+                ((c + 0.5) * p.height) / columns,
+                ((r + 0.5) * p.width) / rows,
+                1,
+                standardRadius,
+                startAngle + 270 - 361,
+                startAngle + 1,
+              );
+            }
+          }
+        },
+      } satisfies Work<State8>);
+    }
+
+    picture(Picture);
+  </script>
+</Base>
